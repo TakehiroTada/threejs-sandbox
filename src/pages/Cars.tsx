@@ -3,8 +3,9 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
-const MODEL_URL = 'https://threejs.org/examples/models/gltf/ferrari.glb'
-const SHADOW_URL = 'https://threejs.org/examples/models/gltf/ferrari_ao.png'
+const MODEL_URL = '/models/ferrari.glb'
+const SHADOW_URL = '/models/ferrari_ao.png'
+const DRACO_PATH = '/draco/'
 
 interface CarModelProps {
   bodyColor: string
@@ -13,7 +14,7 @@ interface CarModelProps {
 }
 
 function CarModel({ bodyColor, detailsColor, glassColor }: CarModelProps) {
-  const { scene } = useGLTF(MODEL_URL, true)
+  const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const shadowTexture = useTexture(SHADOW_URL)
   const wheelsRef = useRef<THREE.Object3D[]>([])
   const bodyMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null)
@@ -175,7 +176,7 @@ export function Cars() {
             detailsColor={detailsColor}
             glassColor={glassColor}
           />
-          <Environment preset="sunset" />
+          <Environment files="/textures/venice_sunset_1k.hdr" />
         </Suspense>
         <AnimatedGrid />
         <OrbitControls
