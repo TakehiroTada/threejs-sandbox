@@ -32,12 +32,12 @@ export function TpsCamera({ selectedCar, carsTransformRef }: TpsCameraProps) {
 
     const targetPos = _targetPos
       .copy(transform.position)
-      .addScaledVector(transform.forward, CAMERA_BEHIND)
+      .addScaledVector(transform.forward, -CAMERA_BEHIND)
     targetPos.y += CAMERA_HEIGHT
 
     const targetLookAt = _targetLookAt
       .copy(transform.position)
-      .addScaledVector(transform.forward, -LOOK_AHEAD)
+      .addScaledVector(transform.forward, LOOK_AHEAD)
     targetLookAt.y += LOOK_HEIGHT
 
     if (!initialized.current) {
