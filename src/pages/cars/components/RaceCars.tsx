@@ -11,6 +11,7 @@ import {
   SEMI_MINOR,
   LANE_WIDTH,
 } from '../constants.ts'
+import type { CarTransform } from '../types.ts'
 
 interface CarState {
   model: THREE.Object3D
@@ -20,12 +21,16 @@ interface CarState {
   lane: number
 }
 
-export function RaceCars() {
+interface RaceCarsProps {
+  carsTransformRef: { current: CarTransform[] }
+}
+
+export function RaceCars({ carsTransformRef }: RaceCarsProps) {
   const gltf = useGLTF(MODEL_URL, DRACO_PATH)
   const shadowTexture = useTexture(SHADOW_URL)
 
   const cars = useMemo<CarState[]>(() => {
-    return CAR_CONFIGS.map((config, i) => {
+    const instances = CAR_CONFIGS.map((config, i) => {
       const model = gltf.scene.children[0].clone(true)
 
       const bodyMat = new THREE.MeshPhysicalMaterial({
@@ -85,10 +90,18 @@ export function RaceCars() {
         lane: i,
       }
     })
-  }, [gltf.scene, shadowTexture])
+
+    carsTransformRef.current = instances.map(() => ({
+      position: new THREE.Vector3(),
+      forward: new THREE.Vector3(),
+    }))
+
+    return instances
+  }, [gltf.scene, shadowTexture, carsTransformRef])
 
   useFrame((_, delta) => {
-    for (const car of cars) {
+    for (let i = 0; i < cars.length; i++) {
+      const car = cars[i]
       car.angle += car.speed * delta
 
       const t = car.angle
@@ -110,6 +123,9 @@ export function RaceCars() {
       for (const wheel of car.wheels) {
         wheel.rotation.x -= car.speed * delta * 15
       }
+
+      carsTransformRef.current[i].position.copy(car.model.position)
+      carsTransformRef.current[i].forward.set(tx / tLen, 0, tz / tLen)
     }
   })
 
