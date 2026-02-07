@@ -118,7 +118,7 @@ export function RaceCars({ carsTransformRef }: RaceCarsProps) {
       const laneOffset = (car.lane - 3.5) * LANE_WIDTH
 
       car.model.position.set(cx + nx * laneOffset, 0, cz + nz * laneOffset)
-      car.model.rotation.y = Math.atan2(tx, tz)
+      car.model.rotation.y = Math.atan2(tx, tz) + Math.PI
 
       for (const wheel of car.wheels) {
         wheel.rotation.x -= car.speed * delta * 15
